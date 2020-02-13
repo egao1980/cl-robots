@@ -2,7 +2,9 @@
   (:use :cl
         :esrap)
   (:import-from #:cl-unicode 
-                #:has-property))
+                #:has-property)
+  (:export #:read-robots.txt
+           #:sitemaps))
 (in-package :cl-robots)
 
 (defrule ws 
@@ -36,8 +38,20 @@
     (+ (character-ranges #\- (#\A #\Z) #\_ (#\a #\z)))
   (:text t))
 
+
+(defrule disallow-verb 
+    (and  (or (~ "disallow")
+              (~ "dissallow")
+              (~ "dissalow")
+              (~ "disalow")
+              (~ "diasllow")
+              (~ "disallaw")) 
+          (* identifier))
+  (:constant "disallow"))
+
+
 (defrule verb
-    identifier)
+  (or disallow-verb identifier))
 
 (defrule empty-pattern 
     (* ws)
@@ -83,75 +97,11 @@
   (:lambda (list)
     (remove nil list)))
 
-(defun parse-robots.txt (text) 
+(defun read-robots.txt (text) 
   (parse 'robotstxt text))
 
 (defun sitemaps (robots)
   (mapcar #'cdr (remove-if-not (lambda (x) (eql (car x) '|sitemap|)) robots)))
 
-(defvar *rt-robots* "
-User-agent: Googlebot
-Disallow: /search*
-Disallow: /preview*
-Disallow: /register*
-Disallow: /login*
-Disallow: /requestresetpass*
-Disallow: /*/video/
-Disallow: /shortcode/
-Disallow: /preview/
-Disallow: /api/
-Disallow: /rtmobile/
-Disallow: /listing/
-Disallow: /widget/
-Disallow: /schedulejson/
-Disallow: /vote/
-Disallow: *?
-Allow: /static/fonts/icon/
-Allow: /static/css/
-Allow: /static/js/
-
-User-agent: bingbot
-Disallow: /search*
-Disallow: /preview*
-Disallow: /register*
-Disallow: /login*
-Disallow: /requestresetpass*
-Disallow: /*/video/
-Disallow: /shortcode/
-Disallow: /preview/
-Disallow: /api/
-Disallow: /rtmobile/
-Disallow: /listing/
-Disallow: /widget/
-Disallow: /schedulejson/
-Disallow: /vote/
-Disallow: *?
-Allow: /static/fonts/icon/
-Allow: /static/css/
-Allow: /static/js/
-
-User-agent: *
-Disallow: /search*
-Disallow: /preview*
-Disallow: /register*
-Disallow: /login*
-Disallow: /requestresetpass*
-Disallow: /*/video/
-Disallow: /shortcode/
-Disallow: /preview/
-Disallow: /api/
-Disallow: /rtmobile/
-Disallow: /listing/
-Disallow: /widget/
-Disallow: /schedulejson/
-Disallow: /vote/
-Disallow: *?
-Allow: /static/fonts/icon/
-Allow: /static/css/
-Allow: /static/js/
-
-Sitemap: https://www.rt.com/sitemap.xml
-Sitemap: https://www.rt.com/newssitemap.xml
-")
 
 
