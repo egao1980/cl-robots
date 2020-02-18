@@ -7,6 +7,8 @@
            #:sitemaps))
 (in-package :cl-robots)
 
+;;; robots.txt grammar rules
+
 (defrule ws 
     (or #\Space #\Tab)
   (:constant nil))
@@ -78,7 +80,7 @@
    (declare (ignore w1 agent w2 col w3 e))
    (cons (intern "user-agent") (text token))))
 
-
+;; sitemap records can be placed anywhere in the file
 (defrule sitemap 
     (and (* ws) (or (~ "site-map") (~ "sitemap")) (* ws) #\: (* ws) (and (~ "http") (? (~ "s")) "://" (+ utf8-char-noctl)) eol)
   (:destructure (w1 site w2 col w3 url e)
@@ -92,16 +94,20 @@
   (:destructure (gr grs rules)
     (list (cons gr (remove nil grs)) (remove nil rules))))
 
+;; groupping and interpretation is outside of the scope of this parser
 (defrule robotstxt
     (* (or startgroupline rule sitemap emptyline))
   (:lambda (list)
-    (remove nil list)))
+      (remove nil list)))
 
-(defun read-robots.txt (text) 
+;;; end of grammar definitions
+
+
+(defun read-robots.txt (text)
+  "Read robots.txt records"
   (parse 'robotstxt text))
 
 (defun sitemaps (robots)
+  "List sitemap URLs in the specified ROBOTS records"
   (mapcar #'cdr (remove-if-not (lambda (x) (eql (car x) '|sitemap|)) robots)))
-
-
 

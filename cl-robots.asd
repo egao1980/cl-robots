@@ -6,7 +6,7 @@
   :components ((:module "src"
                 :components
                 ((:file "main"))))
-  :description "robots.txt parser"
+  :description "Simple robots.txt reader"
   :in-order-to ((test-op (test-op "cl-robots/tests"))))
 
 (defsystem "cl-robots/tests"

@@ -1,12 +1,23 @@
-* Cl-Projects  - robots.txt parser
+* Cl-Projects  - simple robots.txt reader
 
 ** Usage
+#+BEGIN_SRC lisp
+(ql:quickload '(:dexador :cl-robots))
 
+;; read bbc.co.uk robots.txt 
+(defparameter *robots*
+  (cl-robots:read-robots.txt (dex:get "http://bbc.co.uk/robots.txt")))
+
+;; get sitemap URLs
+(cl-robots:sitemaps *robots*)
+#+END_SRC
 ** Installation
-
+#+BEGIN_SRC lisp
+(ql:quickload :cl-robots)
+#+END_SRC
 ** Author
 
-+ Nikolai Matiushev
++ Nikolai Matiushev (nikolai.matiushev@egao.co.uk)
 
 ** Copyright
 
