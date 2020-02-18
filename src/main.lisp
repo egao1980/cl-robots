@@ -28,7 +28,7 @@
   (:constant nil))
 
 (defrule eol
-    (and (* ws) (? comment) nl) 
+    (and (* ws) (? comment) nl)
   (:constant nil))
 
 
@@ -70,29 +70,33 @@
 
 (defrule rule 
     (and (* ws) verb (* ws) #\: (* ws) (or path-pattern empty-pattern) eol)
-  (:destructure (w1 verb w2 col w3 path e)
+  (:destructure
+   (w1 verb w2 col w3 path e)
    (declare (ignore w1 w2 w3 col w3 e))
-   (cons (intern (string-downcase (text verb))) (text path))))
+   (cons (intern (string-downcase (text verb)) :keyword) (text path))))
 
 (defrule startgroupline
     (and (* ws) (or (~ "user agent") (~ "user-agent")) (* ws) #\: (* ws) product-token eol)
-  (:destructure (w1 agent w2 col w3 token e)
+  (:destructure
+   (w1 agent w2 col w3 token e)
    (declare (ignore w1 agent w2 col w3 e))
-   (cons (intern "user-agent") (text token))))
+   (cons (intern "user-agent" :keyword) (text token))))
 
 ;; sitemap records can be placed anywhere in the file
 (defrule sitemap 
     (and (* ws) (or (~ "site-map") (~ "sitemap")) (* ws) #\: (* ws) (and (~ "http") (? (~ "s")) "://" (+ utf8-char-noctl)) eol)
-  (:destructure (w1 site w2 col w3 url e)
+  (:destructure
+   (w1 site w2 col w3 url e)
    (declare (ignore w1 w2 col w3 e))
-   (cons (intern (text site)) (text url))))
+   (cons (intern (text site) :keyword) (text url))))
 
 (defrule group 
     (and startgroupline
          (* (or startgroupline emptyline))
          (* (or rule emptyline)))
-  (:destructure (gr grs rules)
-    (list (cons gr (remove nil grs)) (remove nil rules))))
+  (:destructure
+   (gr grs rules)
+   (list (cons gr (remove nil grs)) (remove nil rules))))
 
 ;; groupping and interpretation is outside of the scope of this parser
 (defrule robotstxt
@@ -101,13 +105,12 @@
       (remove nil list)))
 
 ;;; end of grammar definitions
-
-
 (defun read-robots.txt (text)
-  "Read robots.txt records"
-  (parse 'robotstxt text))
+   "Read robots.txt records"
+  (parse 'robotstxt (concatenate 'string text '(#\Newline))))
 
 (defun sitemaps (robots)
   "List sitemap URLs in the specified ROBOTS records"
-  (mapcar #'cdr (remove-if-not (lambda (x) (eql (car x) '|sitemap|)) robots)))
+  (mapcar #'cdr (remove-if-not (lambda (x) (eql (car x) :|sitemap|)) robots)))
+
 
