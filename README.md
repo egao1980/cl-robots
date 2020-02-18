@@ -1,17 +1,6 @@
-
-# Table of Contents
-
-1.  [Cl-Projects  - simple robots.txt reader](#orge2fa41e)
-    1.  [Usage](#org1972728)
-    2.  [Installation](#org2e77242)
-    3.  [Author](#orgc24dccd)
-    4.  [Copyright](#orge73d72c)
-    5.  [License](#orgdeceb47)
-
-
 <a id="orge2fa41e"></a>
 
-# Cl-Projects  - simple robots.txt reader
+# cl-robots - simple robots.txt reader
 
 
 <a id="org1972728"></a>

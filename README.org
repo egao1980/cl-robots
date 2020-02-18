@@ -1,4 +1,4 @@
-* Cl-Projects  - simple robots.txt reader
+* cl-robots - simple robots.txt reader
 
 ** Usage
 #+BEGIN_SRC lisp
